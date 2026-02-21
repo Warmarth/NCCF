@@ -782,6 +782,21 @@ body {
 
 /* Modals & Forms Re-optimization */
 
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+  transform: scale(1.1);
+  transition: transform 0.2s ease, color 0.2s ease;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
 .modal-content-premium {
   background: var(--dark-bg);
   border: 1px solid var(--border-color);
@@ -799,13 +814,11 @@ body {
   justify-content: center;
   padding: 20px;
   align-items: center;
-  background: rgba(0, 0, 0, 0.4); 
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
 }
-
-
 
 .premium-form {
   display: flex;
@@ -817,7 +830,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-} 
+}
 
 @media (max-width: 600px) {
   .form-row-grid {
@@ -867,7 +880,6 @@ body {
     transform: scale(1);
   }
 }
-
 
 /* ===========================
    Admin Dashboard Styles

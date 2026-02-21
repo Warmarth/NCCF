@@ -9,6 +9,7 @@ import {
   FiShield,
   FiMail,
   FiPhone,
+  
 } from "react-icons/fi";
 import { supabase } from "../lib/supabase";
 import { AuthContext } from "../hook/AuthContext";

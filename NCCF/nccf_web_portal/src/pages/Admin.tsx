@@ -140,45 +140,47 @@ export default function Admin() {
   };
 
   // assign user completed
-const handleAssignUser = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleAssignUser = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  // Check user exists
-  const { data: userExists, error: userError } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("id", assignment.userId)
-    .single();
+    // Check user exists
+    const { data: userExists, error: userError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", assignment.userId)
+      .single();
 
-  if (userError || !userExists) {
-    console.error("User does not exist:", assignment.userId);
-    return;
-  }
+    if (userError || !userExists) {
+      console.error("User does not exist:", assignment.userId);
+      return;
+    }
 
-  // Check if user already has room
-  const { data } = await supabase
-    .from("room_members")
-    .select("profile_id")
-    .eq("profile_id", assignment.userId)
-    .single();
-
-  if (data?.profile_id) {
-    // Update existing
-    await supabase
+    // Check if user already has room
+    const { data } = await supabase
       .from("room_members")
-      .update({ room_id: assignment.roomId })
-      .eq("profile_id", assignment.userId);
-  } else {
-    // Insert new
-    await supabase.from("room_members").insert({
-      profile_id: assignment.userId,
-      room_id: assignment.roomId,
-    });
-  }
+      .select("profile_id")
+      .eq("profile_id", assignment.userId)
+      .single();
 
-  alert(`User successfully assigned to room ${assignment.roomId}`);
-  setAssignment({ userId: "", roomId: "" });
-};
+    if (data?.profile_id) {
+      // Update existing
+      await supabase
+        .from("room_members")
+        .update({ room_id: assignment.roomId })
+        .eq("profile_id", assignment.userId);
+    } else {
+      // Insert new
+      await supabase.from("room_members").insert({
+        profile_id: assignment.userId,
+        room_id: assignment.roomId,
+      });
+    }
+
+    alert(
+      `User successfully assigned to room ${rooms.find((r) => r.id === assignment.roomId)?.name || "Unknown"}.`,
+    );
+    setAssignment({ userId: "", roomId: "" });
+  };
 
   // verify receipt pending
   const handleVerifyReceipt = async (receiptId: string) => {

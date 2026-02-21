@@ -35,7 +35,7 @@ export const IsEditing = ({
             <div className="modal-header">
               <h2>Update Information</h2>
               <button className="modal-close" onClick={handleCancel}>
-                <FiX size={20} />
+                <FiX size={20} className=" text-red-500" />
               </button>
             </div>
 

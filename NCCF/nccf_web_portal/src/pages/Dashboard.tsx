@@ -133,7 +133,7 @@ export default function Dashboard() {
               ></div>
               <div className="stat-inner">
                 <div
-                  className={`stat-icon-wrap bg-gradient-to-br ${stat.color}`}
+                  className={`stat-icon-wrap bg-linear-to-br ${stat.color}`}
                 >
                   <stat.icon size={28} className="text-white" />
                 </div>
