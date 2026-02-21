@@ -195,7 +195,10 @@ const Navbar: React.FC = () => {
     };
 
     const runFetch = async () => {
-      await fetchUserRole(user?.id!);
+      if (!user?.id) {
+        return;
+      }
+      await fetchUserRole(user?.id);
     };
     runFetch();
   }, [user?.id]);

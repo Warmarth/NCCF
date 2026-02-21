@@ -9,48 +9,63 @@ type Room = {
   name: string;
 };
 
+interface RoomMembers {
+  profile_id: string;
+  joined_at: string;
+  profiles:
+    | {
+        name: string;
+        batch: string;
+        state_code: string;
+      }[]
+    | null;
+}
+
 export default function Room() {
   const { id } = useParams();
-  const [room_members, setRoomMembers] = useState<any[]>([]);
+  const [room_members, setRoomMembers] = useState<RoomMembers[]>([]);
   const [room, setRoom] = useState<Room | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+useEffect(() => {
+  if (!id) return;
 
-  const fetchRoomMembers = async () => {
-    const { data: membersData, error: membersError } = await supabase
-      .from("room_members")
-      .select(
-        `profile_id,
-        joined_at,
-        profiles ( name, batch, state_code )
-      `,
-      )
-      .eq("room_id", id);
-    if (membersError) {
-      console.error("Error fetching room members:", membersError);
-    } else {
-      setRoomMembers(membersData || []);
-      setIsLoading(false);
-    }
-  };
+  const fetchData = async () => {
+    setIsLoading(true);
 
-  const fetchRoom = async () => {
-    const { data: roomData, error: roomError } = await supabase
-      .from("rooms")
-      .select("id, name")
-      .eq("id", id)
-      .single();
-    if (roomError) {
-      console.error("Error fetching room:", roomError);
-    } else {
+    try {
+      const { data: roomData, error: roomError } = await supabase
+        .from("rooms")
+        .select("id, name")
+        .eq("id", id)
+        .single();
+
+      if (roomError) throw roomError;
+
+      const { data: membersData, error: membersError } = await supabase
+        .from("room_members")
+        .select(
+          `
+          profile_id,
+          joined_at,
+          profiles ( name, batch, state_code )
+        `,
+        )
+        .eq("room_id", id);
+
+      if (membersError) throw membersError;
+
       setRoom(roomData as Room);
+      setRoomMembers((membersData as RoomMembers[]) ?? []);
+    } catch (error) {
+      console.error("Error fetching room data:", error);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchRoomMembers();
-    fetchRoom();
-  }, [id]);
+  fetchData();
+}, [id]);
 
   return (
     <div className="room-portal-dashboard">

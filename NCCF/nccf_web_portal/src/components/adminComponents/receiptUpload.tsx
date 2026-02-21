@@ -1,7 +1,9 @@
+import type { Receipt } from "../../pages/Admin";
 import { FiCheck, FiX } from "react-icons/fi";
 import type { FC } from "react";
+
 interface IProps {
-  receipts: any[];
+  receipts: Receipt[];
   handleVerifyReceipt: (receiptId: string) => void;
   handleRejectReceipt: (receiptId: string) => void;
 }

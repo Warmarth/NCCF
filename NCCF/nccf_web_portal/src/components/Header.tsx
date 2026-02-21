@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
-import { useTheme } from "../hook/ThemeContext";
+import { useTheme } from "../hook/useTheme";
 import { FiSun, FiMoon } from "react-icons/fi";
 
 interface Profile {
@@ -21,28 +21,10 @@ const Header: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const { theme, toggleTheme } = useTheme();
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      console.error("Error fetching profile:", error);
-      setProfile(null);
-    } else {
-      setProfile(data);
-    }
-  }, []);
-
   useEffect(() => {
-    // Get initial user
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
     });
-
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -57,10 +39,25 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const fetchProfile = async (userId: string) => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        setProfile(null);
+      } else {
+        setProfile(data);
+      }
+    };
+
     if (user?.id) {
       fetchProfile(user.id);
     }
-  }, [user?.id, fetchProfile]);
+  }, [user?.id]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

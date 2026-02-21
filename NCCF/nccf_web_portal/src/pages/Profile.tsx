@@ -14,19 +14,21 @@ import { supabase } from "../lib/supabase";
 import { AuthContext } from "../hook/AuthContext";
 import { IsEditing } from "../components/userComponent/editing";
 
+import type { ProfileFormData } from "../types/profile";
+
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("personal");
   const [avatarPreview, setAvatarPreview] = useState<File | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProfileFormData>({
     name: "",
     username: "",
     bio: "",
     avatar: "",
     gender: "male",
     batch: "",
-    stateCode: "",
+    state_code: "",
     location: "",
     phone: "",
     email: "",
@@ -68,7 +70,7 @@ export default function Profile() {
           avatar: data.avatar || "",
           gender: data.gender || "male",
           batch: data.batch || "",
-          stateCode: data.state_code || "",
+          state_code: data.state_code || "",
           location: data.location || "",
           phone: data.phone || "",
           email: user?.email || "",
@@ -115,13 +117,13 @@ export default function Profile() {
     e.preventDefault();
     setIsLoading(true);
 
-    const payload: any = {
+    const payload: Partial<ProfileFormData> = {
       name: formData.name,
       username: formData.username,
       bio: formData.bio,
       gender: formData.gender,
       batch: formData.batch,
-      state_code: formData.stateCode,
+      state_code: formData.state_code,
       location: formData.location,
     };
     if (avatarPreview) {
@@ -316,7 +318,7 @@ export default function Profile() {
                   </div>
                   <div className="info-tile">
                     <label>State Code</label>
-                    <p>{formData.stateCode || "Not Assigned"}</p>
+                    <p>{formData.state_code || "Not Assigned"}</p>
                   </div>
                   <div className="info-tile">
                     <label>Registration Date</label>
@@ -364,8 +366,6 @@ export default function Profile() {
           </div>
         </main>
       </div>
-
-      {/* Edit Modal - Reused from previous version but styled better */}
 
       {isEditing && (
         <div className="modal-overlay">

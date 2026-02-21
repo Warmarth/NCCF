@@ -1,9 +1,11 @@
+import type { User } from "../../pages/Admin";
+import type { Room } from "../../pages/Rooms";
 interface AssignRoomProps {
   handleAssignUser: (e: React.FormEvent) => void;
   assignment: { userId: string; roomId: string };
   setAssignment: (assignment: { userId: string; roomId: string }) => void;
-  users: any[];
-  rooms: any[];
+  users: User[];
+  rooms: Room[];
 }
 
 function AssignRoom({

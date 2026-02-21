@@ -1,9 +1,10 @@
 import { FiX } from "react-icons/fi";
+import type { ProfileFormData } from "../../types/profile";
 
 interface IProps {
   isEdit: boolean;
   handleCancel: () => void;
-  formData: any;
+  formData: ProfileFormData;
   handleInputChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -122,8 +123,8 @@ export const IsEditing = ({
                   <label>State Code</label>
                   <input
                     type="text"
-                    name="stateCode"
-                    value={formData.stateCode}
+                    name="state_code"
+                    value={formData.state_code}
                     onChange={handleInputChange}
                     placeholder="EK/24B/..."
                   />

@@ -18,7 +18,7 @@ import AssignRoom from "../components/adminComponents/assignRoom";
 import IsLoading from "../components/isLoading";
 import { ReceiptUpload } from "../components/adminComponents/receiptUpload";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   username: string;
@@ -28,7 +28,7 @@ interface User {
   role?: string;
 }
 
-interface Receipt {
+export interface Receipt {
   id: string;
   amount: number;
   payment_type: string;

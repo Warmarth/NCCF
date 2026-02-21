@@ -1,5 +1,7 @@
+import type { User } from "../../pages/Admin";
+
 interface MakerAdminProps {
-  filteredUsers: any[];
+  filteredUsers: User[];
   searchTerm: string;
   setSearchTerm: (searchTerm: string) => void;
   promoteToAdmin: (userId: string) => void;

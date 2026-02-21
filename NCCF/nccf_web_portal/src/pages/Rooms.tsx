@@ -29,58 +29,63 @@ export default function Rooms() {
         setRooms(data as Room[]);
       }
     };
-
     loadRooms();
   }, []);
 
-  useEffect(() => {
-    if (!user) {
+useEffect(() => {
+  if (!user) {
+    setAdmin(false);
+    setMember(false);
+    setMemberRoomIds([]);
+    setLoading(false);
+    return;
+  }
+
+  const fetchUserData = async () => {
+    setLoading(true);
+
+    try {
+      const { data: adminData, error: adminError } = await supabase
+        .from("admins")
+        .select("id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      setAdmin(!!adminData && !adminError);
+
+      const { data: memberData, error: memberError } = await supabase
+        .from("room_members")
+        .select("room_id, profile_id")
+        .eq("profile_id", user.id);
+
+      if (memberError) {
+        console.error("Member check error:", memberError);
+        setMember(false);
+        setMemberRoomIds([]);
+      } else if (memberData && memberData.length > 0) {
+        setMember(true);
+        setMemberRoomIds(memberData.map((r) => r.room_id));
+      } else {
+        setMember(false);
+        setMemberRoomIds([]);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
       setAdmin(false);
       setMember(false);
+      setMemberRoomIds([]);
+    } finally {
       setLoading(false);
-      return;
-    }
-
-    checkAdmin();
-    checkMemberAndRooms();
-  }, [user]);
-
-  
-  const checkAdmin = async () => {
-    const { data, error } = await supabase
-      .from("admins")
-      .select("id")
-      .eq("id", user?.id)
-      .maybeSingle();
-
-    if (!error && data) {
-      setAdmin(true);
     }
   };
 
-  const checkMemberAndRooms = async () => {
-    const { data, error } = await supabase
-      .from("room_members")
-      .select("room_id, profile_id")
-      .eq("profile_id", user?.id);
+  fetchUserData();
+}, [user]);
 
-    if (error) {
-      console.error("Member check error:", error);
-      setMember(false);
-    } else if (data.length > 0) {
-      setMember(true);
-      setMemberRoomIds(data.map((r) => r.room_id));
-    }
-
-    setLoading(false);
-  };
-
-  /* ---------------- ROOMS TO SHOW ---------------- */
   const visibleRooms = admin
     ? rooms
     : rooms.filter((room) => memberRoomIds.includes(room.id));
 
-  /* ---------------- UI ---------------- */
   return (
     <div className="rooms-dashboard">
       <header className="rooms-header-premium">

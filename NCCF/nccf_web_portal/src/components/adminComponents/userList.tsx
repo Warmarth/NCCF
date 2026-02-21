@@ -1,7 +1,8 @@
 import { FiTrash2 } from "react-icons/fi";
+import type { User } from "../../pages/Admin";
 
 interface UserListProps {
-  filteredUsers: any[];
+  filteredUsers: User[];
 }
 
 function UserList({ filteredUsers }: UserListProps) {
