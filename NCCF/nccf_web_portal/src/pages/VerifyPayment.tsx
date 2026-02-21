@@ -92,7 +92,6 @@ const VerifyPayment: React.FC = () => {
     };
     runInit();
 
-    // Cleanup object URL on unmount
     return () => {
       if (receiptPreview) {
         URL.revokeObjectURL(receiptPreview);
@@ -111,11 +110,6 @@ const VerifyPayment: React.FC = () => {
       alert("Please upload a proof of payment (receipt).");
       return;
     }
-
-    console.log(formData);
-    console.log(id);
-    console.log(receiptFile);
-    console.log(receiptPreview);
 
     setIsUploading(true);
 
@@ -230,6 +224,7 @@ const VerifyPayment: React.FC = () => {
               <div className="info-tile">
                 <label>Category</label>
                 <select
+                  aria-label="Category"
                   style={{
                     width: "100%",
                     padding: "0.85rem",
