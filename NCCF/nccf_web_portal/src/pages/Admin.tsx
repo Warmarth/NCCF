@@ -52,7 +52,6 @@ export default function Admin() {
   const [newRoom, setNewRoom] = useState({ name: "" });
   const [assignment, setAssignment] = useState({ userId: "", roomId: "" });
   const [rooms, setRooms] = useState<Room[]>([]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -92,7 +91,6 @@ export default function Admin() {
     }
   }, []);
 
-  // fetch rooms completed
   const fetchRooms = useCallback(async () => {
     const { data, error } = await supabase.from("rooms").select("*");
     if (error) console.error("Error fetching rooms:", error);
@@ -210,12 +208,11 @@ export default function Admin() {
     fetchReceipts();
   };
 
-  // filter users completed
   const filteredUsers = useMemo(() => {
     return users.filter(
       (u) =>
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.username.toLowerCase().includes(searchTerm.toLowerCase()),
+        u?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u?.username?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [users, searchTerm]);
 

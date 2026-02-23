@@ -7,7 +7,12 @@ interface MakerAdminProps {
   promoteToAdmin: (userId: string) => void;
 }
 
-function MakerAdmin({ filteredUsers, searchTerm, setSearchTerm, promoteToAdmin }: MakerAdminProps) {
+function MakerAdmin({
+  filteredUsers,
+  searchTerm,
+  setSearchTerm,
+  promoteToAdmin,
+}: MakerAdminProps) {
   return (
     <div className="tab-pane">
       <div className="admin-form-card">
@@ -26,23 +31,25 @@ function MakerAdmin({ filteredUsers, searchTerm, setSearchTerm, promoteToAdmin }
         </div>
       </div>
       <div className="escalation-list">
-        {filteredUsers.slice(0, 5).map((u) => (
-          <div key={u.id} className="escalation-row">
-            <div className="e-info">
-              <strong>{u.name}</strong>
-              <span>@{u.username}</span>
+        {filteredUsers
+          .filter((user) => user.name.includes(searchTerm))
+          .map((u) => (
+            <div key={u.id} className="escalation-row">
+              <div className="e-info">
+                <strong>{u.name}</strong>
+                <span>@{u.username}</span>
+              </div>
+              <button
+                className="btn-escalate"
+                onClick={() => promoteToAdmin(u.id)}
+              >
+                Grant Admin Access
+              </button>
             </div>
-            <button
-              className="btn-escalate"
-              onClick={() => promoteToAdmin(u.id)}
-            >
-              Grant Admin Access
-            </button>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
 }
 
-export default MakerAdmin
+export default MakerAdmin;
