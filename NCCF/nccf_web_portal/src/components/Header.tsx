@@ -2,23 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import type { ProfileFormData } from "../types/profile";
 import { useTheme } from "../hook/useTheme";
 import { FiSun, FiMoon } from "react-icons/fi";
 
-interface Profile {
-  name: string;
-  username: string | null;
-  bio: string | null;
-  avatar: string | null;
-  gender: string | null;
-  batch: string | null;
-  state_code: string | null;
-  location: string | null;
-}
-
 const Header: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<ProfileFormData | null>(null);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -34,7 +24,6 @@ const Header: React.FC = () => {
         setProfile(null);
       }
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
@@ -69,7 +58,12 @@ const Header: React.FC = () => {
         <div className="header-content">
           <Link to="/" className="logo">
             <div className="logo-icon">
-              <img src="/logo.svg" alt="NCCF Logo" width="32" height="32" />
+              <img
+                src="/nccf_logo.jpg"
+                alt="NCCF Logo"
+                width="32"
+                height="32"
+              />
             </div>
             <span className="logo-text">NCCF</span>
           </Link>

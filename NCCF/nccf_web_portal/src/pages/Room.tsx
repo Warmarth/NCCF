@@ -15,6 +15,7 @@ interface RoomMembers {
   profiles:
     | {
         name: string;
+        avatar: string;
         batch: string;
         state_code: string;
       }[]
@@ -48,7 +49,7 @@ useEffect(() => {
           `
           profile_id,
           joined_at,
-          profiles ( name, batch, state_code )
+          profiles ( name,avatar, batch, state_code )
         `,
         )
         .eq("room_id", id);
@@ -150,7 +151,11 @@ useEffect(() => {
                         <td>
                           <div className="member-identity">
                             <div className="member-avatar-mini">
-                              {(profile?.name || "?").charAt(0).toUpperCase()}
+                              {profile?.avatar ? (
+                                <img src={profile.avatar} alt="Profile" />
+                              ) : (
+                                (profile?.name || "?").charAt(0).toUpperCase()
+                              )}
                             </div>
                             <div className="member-name-info">
                               <strong>

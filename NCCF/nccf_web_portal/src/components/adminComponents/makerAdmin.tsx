@@ -32,12 +32,14 @@ function MakerAdmin({
       </div>
       <div className="escalation-list">
         {filteredUsers
-          .filter((user) => user.name.includes(searchTerm))
+          .filter((user) =>
+            user?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
           .map((u) => (
             <div key={u.id} className="escalation-row">
               <div className="e-info">
-                <strong>{u.name}</strong>
-                <span>@{u.username}</span>
+                <strong>{u?.name}</strong>
+                <span>@{u?.username}</span>
               </div>
               <button
                 className="btn-escalate"

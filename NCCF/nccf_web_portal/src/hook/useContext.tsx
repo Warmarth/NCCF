@@ -9,15 +9,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initSession = async () => {
-        const { data } = await supabase.auth.getSession();
-        setUser(data.session?.user ?? null);
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user ?? null);
     };
 
     initSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      },
+    );
 
     return () => {
       authListener?.subscription.unsubscribe();

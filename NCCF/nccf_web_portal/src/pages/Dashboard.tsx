@@ -9,53 +9,101 @@ import {
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../hook/AuthContext";
+import { supabase } from "../lib/supabase";
 
+
+const stats = [
+  {
+    label: "Total Rooms",
+    value: "18",
+    icon: FiHome,
+    color: "from-blue-500 to-indigo-600",
+    shadow: "rgba(59, 130, 246, 0.5)",
+  },
+  {
+    label: "Verified Payments",
+    value: "124",
+    icon: FiCheckCircle,
+    color: "from-emerald-500 to-teal-600",
+    shadow: "rgba(16, 185, 129, 0.5)",
+  },
+  {
+    label: "Pending Verifications",
+    value: "12",
+    icon: FiClock,
+    color: "from-amber-500 to-orange-600",
+    shadow: "rgba(245, 158, 11, 0.5)",
+  },
+];
+
+const quickActions = [
+  {
+    name: "Browse Rooms",
+    path: "/rooms",
+    desc: "Secure your spot in our premium hostels",
+    icon: <FiHome />,
+  },
+  {
+    name: "Verify Payment",
+    path: "/verify-payment",
+    desc: "Fast-track your registration process",
+    icon: <FiCheckCircle />,
+  },
+  {
+    name: "Update Profile",
+    path: "/profile",
+    desc: "Keep your information up to date",
+    icon: <FiUser />,
+  },
+];
 export default function Dashboard() {
-  const stats = [
-    {
-      label: "Total Rooms",
-      value: "18",
-      icon: FiHome,
-      color: "from-blue-500 to-indigo-600",
-      shadow: "rgba(59, 130, 246, 0.5)",
-    },
-    {
-      label: "Verified Payments",
-      value: "124",
-      icon: FiCheckCircle,
-      color: "from-emerald-500 to-teal-600",
-      shadow: "rgba(16, 185, 129, 0.5)",
-    },
-    {
-      label: "Pending Verifications",
-      value: "12",
-      icon: FiClock,
-      color: "from-amber-500 to-orange-600",
-      shadow: "rgba(245, 158, 11, 0.5)",
-    },
-  ];
 
-  const quickActions = [
-    {
-      name: "Browse Rooms",
-      path: "/rooms",
-      desc: "Secure your spot in our premium hostels",
-      icon: <FiHome />,
-    },
-    {
-      name: "Verify Payment",
-      path: "/verify-payment",
-      desc: "Fast-track your registration process",
-      icon: <FiCheckCircle />,
-    },
-    {
-      name: "Update Profile",
-      path: "/profile",
-      desc: "Keep your information up to date",
-      icon: <FiUser />,
-    },
-  ];
 
+
+  const auth = useContext(AuthContext);
+  const user = auth?.user;
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    const fetchUserRole = async (userId: string) => {
+      if (!userId) {
+        setUserRole(null);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("admins")
+          .select("*")
+          .eq("id", userId)
+          .maybeSingle();
+        if (error) {
+          setUserRole("user");
+        
+          return;
+        }
+
+        setUserRole(data?.role || "user");
+      
+      } catch (err) {
+        console.error("Error fetching user role:", err);
+        setUserRole("user");
+      }
+    };
+
+    const runFetch = async () => {
+      if (!user?.id) {
+        return;
+      }
+      await fetchUserRole(user?.id);
+    };
+    runFetch();
+  }, [user?.id]);
+
+  
   return (
     <div className="dashboard-container">
       {/* Dynamic Background Elements */}
@@ -67,7 +115,8 @@ export default function Dashboard() {
         <header className="dashboard-header">
           <div className="header-welcome">
             <h1>
-              Welcome to <span className="gradient-text">NCCF Portal</span>
+              Welcome to{" "}
+              <span className="gradient-text">NCCF Ado Ekiti Portal</span>
             </h1>
             <p>
               Manage your accommodation and payments with ease and precision.
@@ -125,25 +174,27 @@ export default function Dashboard() {
 
         {/* Stats Grid */}
         <div className="stats-grid">
-          {stats.map((stat, i) => (
-            <div key={i} className="stat-card">
-              <div
-                className="stat-glow"
-                style={{ background: stat.shadow }}
-              ></div>
-              <div className="stat-inner">
-                <div
-                  className={`stat-icon-wrap bg-linear-to-br ${stat.color}`}
-                >
-                  <stat.icon size={28} className="text-white" />
+          {userRole === "admin"
+            ? stats.map((stat, i) => (
+                <div key={i} className="stat-card">
+                  <div
+                    className="stat-glow"
+                    style={{ background: stat.shadow }}
+                  ></div>
+                  <div className="stat-inner">
+                    <div
+                      className={`stat-icon-wrap bg-linear-to-br ${stat.color}`}
+                    >
+                      <stat.icon size={28} className="text-white" />
+                    </div>
+                    <div className="stat-info">
+                      <p className="label">{stat.label}</p>
+                      <p className="value">{stat.value}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="stat-info">
-                  <p className="label">{stat.label}</p>
-                  <p className="value">{stat.value}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+              ))
+            : null}
         </div>
 
         {/* Quick Actions Title */}

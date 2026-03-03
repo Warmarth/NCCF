@@ -75,20 +75,19 @@ export default function Admin() {
     }
   }, []);
 
-  const fetchReceipts = useCallback(async (isMounted = true) => {
+  const fetchReceipts = useCallback(async () => {
     setIsLoading(true);
     const { data, error } = await supabase
       .from("payment_verification")
       .select("*")
       .order("created_at", { ascending: false });
-    if (isMounted) {
-      if (error) {
-        console.error("Error fetching receipts:", error);
-      } else {
-        setReceipts(data || []);
-      }
-      setIsLoading(false);
+
+    if (error) {
+      console.error("Error fetching receipts:", error);
+    } else {
+      setReceipts(data || []);
     }
+    setIsLoading(false);
   }, []);
 
   const fetchRooms = useCallback(async () => {
